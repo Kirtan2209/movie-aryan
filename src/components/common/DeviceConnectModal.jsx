@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Smartphone, Copy, Check, QrCode, Wifi, Tv, ExternalLink } from 'lucide-react';
+import { X, Smartphone, Copy, Check, QrCode, Wifi, Tv, ExternalLink, Globe, Sparkles } from 'lucide-react';
 import { soundFx } from '../../utils/sound';
 import { useToast } from '../../context/ToastContext';
 
 export const DeviceConnectModal = ({ isOpen, onClose }) => {
   const { addToast } = useToast();
   const [copied, setCopied] = useState(false);
-  const [networkInfo, setNetworkInfo] = useState({
-    ip: '192.168.1.7',
-    port: 5174,
-    streamUrl: 'http://192.168.1.7:5174'
+  const [networkInfo, setNetworkInfo] = useState(() => {
+    const port = typeof window !== 'undefined' ? (window.location.port || '5173') : '5173';
+    return {
+      ip: '192.168.1.7',
+      port,
+      streamUrl: `http://192.168.1.7:${port}`
+    };
   });
 
   useEffect(() => {
@@ -55,7 +58,7 @@ export const DeviceConnectModal = ({ isOpen, onClose }) => {
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -96,7 +99,7 @@ export const DeviceConnectModal = ({ isOpen, onClose }) => {
               />
               <button
                 onClick={handleCopy}
-                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-[#E5A93C] hover:text-black text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0"
+                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-[#E5A93C] hover:text-black text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 cursor-pointer"
               >
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copied ? 'Copied' : 'Copy'}</span>
@@ -104,21 +107,21 @@ export const DeviceConnectModal = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Instructions note */}
-          <div className="mt-4 p-3 rounded-xl bg-white/[0.03] border border-white/10 text-[11px] text-slate-300 text-left space-y-1">
-            <p className="font-semibold text-white flex items-center gap-1.5">
-              <Tv className="w-3.5 h-3.5 text-cyan-400" />
-              Instant Multi-Device Sync:
+          {/* 24/7 Cloud Solution: When Laptop Is Turned Off */}
+          <div className="mt-4 p-3.5 rounded-2xl bg-amber-500/10 border border-[#E5A93C]/30 text-[11px] text-slate-300 text-left space-y-1.5">
+            <p className="font-bold text-white flex items-center gap-1.5">
+              <Globe className="w-3.5 h-3.5 text-[#E5A93C]" />
+              Laptop Off Hone Par Kahi Bhi Dekhna Ho:
             </p>
-            <p className="text-slate-400 text-[10px]">
-              Any video uploaded here will immediately appear and stream on your phone, iPad, or Smart TV in real-time.
+            <p className="text-slate-300 text-[11px] leading-relaxed">
+              Movie upload karte waqt <strong>"24/7 Cloud (Google Drive)"</strong> tab me apna link paste karein. Isse video Google ke servers par 24/7 chalu rehti hai, chahe aapka laptop completely switch off ho!
             </p>
           </div>
 
           {/* Done button */}
           <button
             onClick={onClose}
-            className="mt-5 w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs transition-colors"
+            className="mt-5 w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs transition-colors cursor-pointer"
           >
             Close
           </button>

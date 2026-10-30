@@ -251,8 +251,8 @@ export const MovieProvider = ({ children }) => {
       subtitles: ["English [CC]", "Hindi", "Spanish"]
     };
     setMovies(prev => [movieWithId, ...prev]);
-    // Sync to Google Sheet cloud backend
-    addMovieToSheet(movieWithId);
+    // Sync to Google Sheet cloud backend & trigger email notification
+    addMovieToSheet(movieWithId, newMovie.notifyEmail);
     return movieWithId;
   };
 

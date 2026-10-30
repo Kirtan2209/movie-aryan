@@ -62,6 +62,29 @@ export const formatSecondsToDuration = (seconds) => {
 };
 
 /**
+ * Converts Google Drive, Dropbox, or Cloud URLs to direct 24/7 playable video streams
+ */
+export const convertToDirectStreamUrl = (url) => {
+  if (!url) return '';
+  const trimmed = url.trim();
+
+  // Google Drive: https://drive.google.com/file/d/FILE_ID/view... or open?id=FILE_ID
+  const gdriveRegex = /https:\/\/drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]+)/;
+  const gdriveMatch = trimmed.match(gdriveRegex);
+  if (gdriveMatch && gdriveMatch[1]) {
+    const fileId = gdriveMatch[1];
+    return `https://drive.google.com/uc?export=download&id=${fileId}`;
+  }
+
+  // Dropbox: convert dl=0 to raw=1 for direct streaming
+  if (trimmed.includes('dropbox.com')) {
+    return trimmed.replace('dl=0', 'raw=1');
+  }
+
+  return trimmed;
+};
+
+/**
  * Uploads a video file directly to the local streaming server
  */
 export const uploadVideoFile = async (file, onProgress) => {

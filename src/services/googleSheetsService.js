@@ -1,10 +1,12 @@
+export const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxijjq4MgK2iiFMtOEWHfou6Fzq2v2LqOqFxQFRssBPMUoTUcJAZ3BuEF5A457imytF/exec';
+
 const STORAGE_KEY = 'kirtan_google_sheets_url';
 
 export const getSavedSheetUrl = () => {
   try {
-    return localStorage.getItem(STORAGE_KEY) || '';
+    return localStorage.getItem(STORAGE_KEY) || DEFAULT_SHEET_URL;
   } catch {
-    return '';
+    return DEFAULT_SHEET_URL;
   }
 };
 
@@ -43,9 +45,9 @@ export const fetchMoviesFromSheet = async (url) => {
 };
 
 /**
- * Add movie to Google Sheet
+ * Add movie to Google Sheet and trigger instant email notification to owner
  */
-export const addMovieToSheet = async (movie) => {
+export const addMovieToSheet = async (movie, notifyEmail = '') => {
   const targetUrl = getSavedSheetUrl();
   if (!targetUrl) return false;
 
@@ -56,7 +58,8 @@ export const addMovieToSheet = async (movie) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         action: 'add',
-        movie
+        movie,
+        notifyEmail: notifyEmail || ''
       })
     });
     return true;

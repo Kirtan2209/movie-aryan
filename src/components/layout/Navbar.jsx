@@ -125,7 +125,7 @@ export const Navbar = () => {
           </button>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 bg-[#12141D]/60 p-1.5 rounded-full border border-white/[0.08] backdrop-blur-xl">
+          <nav className="hidden md:flex items-center gap-1 bg-white/[0.07] p-1.5 rounded-full border border-white/[0.15] backdrop-blur-2xl shadow-inner">
             {navItems.map((item) => {
               const isActive = activeTab === item.id;
               return (
