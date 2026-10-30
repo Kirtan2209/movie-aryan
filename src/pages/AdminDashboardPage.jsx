@@ -11,7 +11,8 @@ import {
   ShieldCheck, 
   Smartphone, 
   UploadCloud, 
-  CheckCircle2 
+  CheckCircle2,
+  Table
 } from 'lucide-react';
 import { useMovies } from '../context/MovieContext';
 import { useToast } from '../context/ToastContext';
@@ -19,6 +20,7 @@ import { AdminStats } from '../components/admin/AdminStats';
 import { AdminMovieTable } from '../components/admin/AdminMovieTable';
 import { MovieUploadModal } from '../components/admin/MovieUploadModal';
 import { DeviceConnectModal } from '../components/common/DeviceConnectModal';
+import { GoogleSheetsSync } from '../components/admin/GoogleSheetsSync';
 import { soundFx } from '../utils/sound';
 
 export const AdminDashboardPage = () => {
@@ -105,6 +107,7 @@ export const AdminDashboardPage = () => {
       <div className="flex items-center gap-2 border-b border-white/10 pb-2 overflow-x-auto no-scrollbar">
         {[
           { id: 'catalog', label: 'Catalog & Titles', icon: Film, count: movies.length },
+          { id: 'sheets', label: 'Google Sheets DB', icon: Table, isSpecial: true },
           { id: 'stats', label: 'Telemetry & Bandwidth', icon: HardDrive },
           { id: 'system', label: 'Platform Standards', icon: ShieldCheck }
         ].map((tab) => {
@@ -215,6 +218,11 @@ export const AdminDashboardPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Tab: Google Sheets Cloud Database */}
+      {activeAdminTab === 'sheets' && (
+        <GoogleSheetsSync />
       )}
 
       {/* Upload/Edit Modal */}

@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { INITIAL_MOVIES } from '../data/initialMovies';
 import { soundFx } from '../utils/sound';
+import { 
+  addMovieToSheet, 
+  updateMovieInSheet, 
+  deleteMovieFromSheet, 
+  fetchMoviesFromSheet 
+} from '../services/googleSheetsService';
 
 const MovieContext = createContext(null);
 
@@ -26,6 +32,17 @@ export const MovieProvider = ({ children }) => {
     }
     return INITIAL_MOVIES;
   });
+
+  // Attempt live sync from Google Sheets cloud on startup
+  useEffect(() => {
+    fetchMoviesFromSheet()
+      .then((cloudMovies) => {
+        if (cloudMovies && cloudMovies.length > 0) {
+          setMovies(cloudMovies);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Watchlist
   const [watchlist, setWatchlist] = useState(() => {
@@ -231,9 +248,11 @@ export const MovieProvider = ({ children }) => {
       cast: newMovie.cast || [
         { name: "Lead Actor", role: "Protagonist", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" }
       ],
-      subtitles: ["English [CC]", "Spanish", "French"]
+      subtitles: ["English [CC]", "Hindi", "Spanish"]
     };
     setMovies(prev => [movieWithId, ...prev]);
+    // Sync to Google Sheet cloud backend
+    addMovieToSheet(movieWithId);
     return movieWithId;
   };
 
@@ -242,6 +261,8 @@ export const MovieProvider = ({ children }) => {
     if (detailsMovie?.id === id) {
       setDetailsMovie(prev => ({ ...prev, ...updatedFields }));
     }
+    // Sync to Google Sheet
+    updateMovieInSheet(id, updatedFields);
   };
 
   const deleteMovie = (id) => {
@@ -249,6 +270,8 @@ export const MovieProvider = ({ children }) => {
     if (detailsMovie?.id === id) setDetailsMovie(null);
     if (playingMovie?.id === id) setPlayingMovie(null);
     clearProgress(id);
+    // Sync deletion to Google Sheet
+    deleteMovieFromSheet(id);
   };
 
   const resetToDefaults = () => {
@@ -260,6 +283,7 @@ export const MovieProvider = ({ children }) => {
     <MovieContext.Provider
       value={{
         movies,
+        setMovies,
         watchlist,
         likedMovies,
         watchProgress,
